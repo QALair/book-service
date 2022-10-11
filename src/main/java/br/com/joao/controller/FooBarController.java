@@ -8,7 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+//import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "foo-bar")
 @RestController
 @RequestMapping("book-service")
 public class FooBarController {
@@ -17,6 +21,9 @@ public class FooBarController {
 	
 	@GetMapping("/foo-bar")
 	//@Retry(name = "foo-bar", fallbackMethod = "fallbackMethod")
+	//@CircuitBreaker(name = "foo-bar", fallbackMethod = "fallbackMethod")
+	//@Bulkhead(name = "default")
+	@Operation(summary = "foo-bar")
 	@CircuitBreaker(name = "foo-bar", fallbackMethod = "fallbackMethod")
 	public String fooBar() {
 		logger.info("Request to foo-bar is received!");

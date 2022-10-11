@@ -5,12 +5,15 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 resilience4j:
-  retry:
+  bulkhead:
     instances:
-      foo-bar:
-        max-attempts: 5
-        wait-duration: 3s
-        enable-exponential-backoff: true
+      default:
+        max-concurrent-calls: 10
+  ratelimiter:
+    instances:
+      default:
+        limit-for-period: 2
+        limit-refresh-period: 10s
 spring:
   application:
     name: book-service
@@ -18,7 +21,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/book_service?useTimezone=true&serverTimezone=UTC
     username: root
-    password: alasca123
+    password: admin123
   jackson:
     default-property-inclusion: NON_NULL
     serialization:
@@ -29,12 +32,18 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        dialect: org.hibernate.dialect.MySQL57Dialect
   flyway:
-    url: jdbc:mysql://localhost:3306/
-    schemas: book_service
+    url: jdbc:mysql://localhost:3306/book_service?useTimezone=true&serverTimezone=UTC
     user: root
-    password: alasca123
+    password: admin123
     driver: com.mysql.cj.jdbc.Driver
     table: flyway_schema_history
     createSchemas: true
+  sleuth:
+    sampler:
+      probability: 1.0
+springdoc:
+  show-actuator: true
+  api-docs:
+    path: book-service/v3/api-docs
